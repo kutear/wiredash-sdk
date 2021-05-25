@@ -46,7 +46,7 @@ class WiredashThemeData {
               topLeft: Radius.circular(16),
               topRight: Radius.circular(16),
             ),
-        fontFamily: fontFamily ?? _fontFamily,
+        fontFamily: fontFamily,
       );
     } else {
       return WiredashThemeData._(
@@ -72,7 +72,7 @@ class WiredashThemeData {
               topLeft: Radius.circular(16),
               topRight: Radius.circular(16),
             ),
-        fontFamily: fontFamily ?? _fontFamily,
+        fontFamily: fontFamily,
       );
     }
   }
@@ -118,17 +118,16 @@ class WiredashThemeData {
   final Color thirdPenColor;
   final Color fourthPenColor;
 
-  final String fontFamily;
+  final String? fontFamily;
 
   final BorderRadius sheetBorderRadius;
 
   static const white = Color(0xFFFFFFFF);
   static const black = Color(0xFF000000);
 
-  static const _fontFamily = 'LexendDeca';
   static const _packageName = 'wiredash';
 
-  String? get packageName => fontFamily == _fontFamily ? _packageName : null;
+  String? get packageName => fontFamily == null ? _packageName : null;
 
   TextStyle get titleStyle => TextStyle(
       package: packageName,
