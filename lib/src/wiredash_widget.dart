@@ -3,7 +3,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
 import 'package:path_provider/path_provider.dart';
-// ignore: import_of_legacy_library_into_null_safe
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:wiredash/src/capture/capture.dart';
 import 'package:wiredash/src/common/build_info/build_info_manager.dart';
@@ -18,6 +17,7 @@ import 'package:wiredash/src/common/user/user_manager.dart';
 import 'package:wiredash/src/common/utils/build_info.dart';
 import 'package:wiredash/src/common/utils/project_credential_validator.dart';
 import 'package:wiredash/src/common/widgets/wiredash_scaffold.dart';
+import 'package:wiredash/src/feedback/data/direct_feedback_submitter.dart';
 import 'package:wiredash/src/feedback/data/pending_feedback_item_storage.dart';
 import 'package:wiredash/src/feedback/data/retrying_feedback_submitter.dart';
 import 'package:wiredash/src/feedback/feedback_model.dart';
@@ -164,15 +164,16 @@ class WiredashState extends State<Wiredash> {
       () async => (await getApplicationDocumentsDirectory()).path,
     );
 
-    final retryingFeedbackSubmitter =
-        RetryingFeedbackSubmitter(fileSystem, storage, _api)
-          ..submitPendingFeedbackItems();
+    final feedbackSubmitter = kIsWeb
+        ? DirectFeedbackSubmitter(_api)
+        : (RetryingFeedbackSubmitter(fileSystem, storage, _api)
+          ..submitPendingFeedbackItems());
 
     _feedbackModel = FeedbackModel(
       captureKey,
       navigatorKey,
       userManager,
-      retryingFeedbackSubmitter,
+      feedbackSubmitter,
       DeviceInfoGenerator(
         buildInfoManager,
         WidgetsBinding.instance!.window,
